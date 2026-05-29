@@ -1,4 +1,4 @@
-import { getScaleKit } from "@/app/lib/scalekit";
+import { getScaleKit  } from "@/app/lib/scalekit";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -8,6 +8,7 @@ export async function GET(req: NextRequest) {
     const url = await scalekit.getAuthorizationUrl(redirectUri);
 
     console.log("ScaleKit auth redirect URL:", url);
+    
     return NextResponse.redirect(url);
   } catch (error) {
     console.error("Auth login error:", error);
@@ -19,4 +20,4 @@ export async function GET(req: NextRequest) {
       { status: 500 }
     );
   }
-}
+} 
