@@ -1,4 +1,10 @@
 {
+  "private": true,
+  "scripts": {
+    "dev": "cd support-ai && npm run dev",
+    "build": "cd support-ai && npm run build",
+    "start": "cd support-ai && npm run start"
+  },
   "dependencies": {
     "@scalekit-sdk/node": "^2.6.0"
   }
