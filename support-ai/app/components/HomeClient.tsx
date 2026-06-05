@@ -1,24 +1,47 @@
 "use client";
+
 import { AnimatePresence, motion } from "motion/react";
-import { div, p } from "motion/react-client";
-import React, { useState,useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-function HomeClient({email}:{email:string }) {
-    const handleLogin=()=> {
-        window.location.href="/api/auth/login"
-    }
-    const firstLetter = email && email.length > 0 ? email[0].toUpperCase() : "";
-    const [open,setOpen]=useState(false)
-    const popupRef=useRef<HTMLDivElement>(null)
-    useEffect(()=> {
-      const handler=(e:MouseEvent)=>{
-        if (popupRef.current && !popupRef.current.contains(e.target as Node))
-        setOpen(false)
+type Props = { email: string };
 
-      }
-      document.addEventListener("mousedown",handler)
-      return ()=>document.removeEventListener("mousedown",handler)
-    },[])
+function HomeClient({ email }: Props) {
+  const handleLogin = () => {
+    window.location.href = "/api/auth/login";
+  };
+
+  const firstLetter = email?.[0]?.toUpperCase() ?? "";
+  const [open, setOpen] = useState(false);
+  const popupRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (popupRef.current && !popupRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const handleLogOut = () => {
+    setOpen(false);
+    window.location.assign(`/api/auth/logout?t=${Date.now()}`);
+  };
+
+  const features = [
+    {
+      title: "plug & play",
+      desc: "add the chatbot to your site with a single script tag.",
+    },
+    {
+      title: "admin controlled",
+      desc: "you contol exactly what the AI knows and answers.",
+    },
+    {
+      title: "Always online",
+      desc: "your customer get instant suport 24/7.",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-zinc-50 text-zinc-900 overflow-x-hidden">
       <motion.div
@@ -31,44 +54,156 @@ function HomeClient({email}:{email:string }) {
           <div className="text-lg font-semibold tracking-tight">
             support <span className="text-zinc-400">AI</span>
           </div>
-         
-           {email?<div className="relative" ref={popupRef} >
-            <button className="w-10 h-10 rounded-full
-                          bg-black text-white
-                          flex items-center justify-center
-                          font-semibold
-                          hover:scale-105 transition"
-                          onClick={()=>setOpen(!open)}
-                          >{firstLetter}</button>
-          <AnimatePresence>                
-          {open && (
-            <motion.div
-            initial={{opacity:0, y:-6}}
-            animate={{opacity:1, y:0}}
-          exit={{opacity:0,y:-6}}
-            className="absolute right-0 mt-3 w-44
-            bg-white rounded-x1
-            shadow-xl border border-zinc-200
-            overflow-hidden">
 
-              <button className="w-full text-left px-4 py-3 text-sm
-              hover:bg-zinc-100">Deshboard</button>
-              <button className="black px-4 py-3 text-sm text-red-600
-              hover:bg-zinc-100">Logout</button>
+          {email ? (
+            <div className="relative" ref={popupRef}>
+              <button
+                className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-semibold hover:scale-105 transition"
+                onClick={() => setOpen(!open)}
+              >
+                {firstLetter}
+              </button>
 
-          </motion.div> )} 
-          </AnimatePresence>               
-
-           </div> : <motion.button
-            className="px-5 py-2 rounded-full bg-black text-white text-sm font-medium hover:bg-zinc-800 transition flex items-center gap-2"
-            onClick={handleLogin}
-          >
-            Login
-          </motion.button>}
+              <AnimatePresence>
+                {open && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    className="absolute right-0 mt-3 w-44 bg-white rounded-xl shadow-xl border border-zinc-200 overflow-hidden"
+                  >
+                    <button
+                      className="w-full text-left px-4 py-3 text-sm hover:bg-zinc-100"
+                      onClick={() => window.location.assign("/Deshboard")}
+                    >
+                      Deshboard
+                    </button>
+                    <button
+                      className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-zinc-100"
+                      onClick={handleLogOut}
+                    >
+                      Logout
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <motion.button
+              className="px-5 py-2 rounded-full bg-black text-white text-sm font-medium hover:bg-zinc-800 transition"
+              onClick={handleLogin}
+            >
+              Login
+            </motion.button>
+          )}
         </div>
       </motion.div>
+
+      <section className="pt-36 pb-28 px-6">
+        <div className="max-w-6x1 mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <h1 className="text-4x1 md:text-5xl font-semibold leading-tight">
+              AI Customer Support <br />
+              Build for Modern Website
+            </h1>
+            <p className="mt-6 text-lg text-zinc-600 max-w-xl">
+              add apowerfull AI chatbot to your website in minute. Let your customers get instant answer
+              using your own business knowledge.
+            </p>
+
+            <div className="mt-10 flex gap-4">
+              {email ? (
+                <button
+                  className="px-7 py-3 rounded-xl bg-black text-white font-medium hover:bg-zinc-800 transition disabled:opacity-60"
+                  onClick={() => window.location.assign("/Deshboard")}
+                >
+                  Go to Deshboard
+                </button>
+              ) : (
+                <button
+                  className="px-7 py-3 rounded-xl bg-black text-white font-medium hover:bg-zinc-800 transition disabled:opacity-60"
+                  onClick={handleLogin}
+                >
+                  Get Started
+                </button>
+              )}
+
+              <a
+                href="#feature"
+                className="px-7 py-3 rounded-xl border border-zinc-300 text-zinc-700 hover:bg-zinc-100 transition"
+              >
+                Learn More
+              </a>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="relative"
+          >
+            <div className="rounded-2xl bg-white shadow-2xl border border-zinc-200 p-6">
+              <div className="text-sm text-zinc-500 mb-3">LIve chat preview</div>
+              <div className="space-y-3">
+                <div className="bg-black text-white rounded-lg px-4 py-2 text-sm ml-auto w-fit">
+                  Do you offer cash on delivery?
+                </div>
+                <div className="bg-zinc-100 rounded-lg px-4 py-2 text-sm mr-auto w-fit">
+                  yes, cash on delivery is available.
+                </div>
+              </div>
+
+              <motion.div
+                animate={{ y: [0, -12, 0] }}
+                transition={{ repeat: Infinity, duration: 3 }}
+                className="absolute -bottom-6 -right-6 w-14 h-14 rounded-full bg-black text-white flex items-center justify-center shadow-xl"
+              >
+                💬
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section id="feature" className="bf-zinc-50 py-28 px-6 border-t border-zinc-200">
+        <div className="max-w-6xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false }}
+            transition={{ duration: 0.5 }}
+            className="text-3xl font-semibold text-center"
+          >
+            Why Business choose Support AI
+          </motion.h2>
+
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-10">
+            {features.map((f, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: false }}
+                className="bg-white rounded-2xl p-8 shadow-lg border border-zinc-200"
+              >
+                <h1 className="text-lg font-medium">{f.title}</h1>
+                <p className="mt-3 text-zinc-600 text-small">{f.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <footer>&copy; {new Date().getFullYear()} SupportAI. All rights reserved.</footer>
     </div>
   );
 }
 
 export default HomeClient;
+

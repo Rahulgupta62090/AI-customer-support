@@ -10,8 +10,10 @@ export async function getSession(){
         return null
     }
     try {
-        const result:any=await scalekit.validateToken(token)
-        const user= await scalekit.user.getUser(result.sub)
+        const result = await scalekit.validateToken(token)
+        // ScaleKit token validation result should contain a `sub` claim (user id)
+        const userId = (result as { sub: string }).sub
+        const user = await scalekit.user.getUser(userId)
         return user
     } catch (error) {
         console.log(error)

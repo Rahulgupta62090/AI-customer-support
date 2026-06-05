@@ -6,6 +6,7 @@
     "start": "cd support-ai && npm run start"
   },
   "dependencies": {
-    "@scalekit-sdk/node": "^2.6.0"
+    "@scalekit-sdk/node": "^2.6.0",
+    "axios": "^1.17.0"
   }
 }
