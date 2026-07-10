@@ -8,7 +8,12 @@ export async function GET(req: NextRequest) {
   try {
     const cookieStore = await cookies();
     
-    cookieStore.delete("access_token");
+    // Best-effort: avoid throwing if delete isn't supported in this context.
+    try {
+      cookieStore.delete("access_token");
+    } catch (e) {
+      console.warn("logout: failed to clear access_token cookie:", e);
+    }
     
     const origin = req.nextUrl.origin || "http://localhost:3000";
     return NextResponse.redirect(new URL("/", origin));

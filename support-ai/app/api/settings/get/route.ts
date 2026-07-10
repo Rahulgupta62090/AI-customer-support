@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const setting = await SettingsModel.findOne({ ownerId });
     return NextResponse.json(setting);
   } catch (error) {
-    return NextResponse.json({ message: `settings error ${error}` }, { status: 500 });
+    return NextResponse.json({ message: `get settings error ${error}` }, { status: 500 });
   }
 }
 

@@ -3,8 +3,7 @@ import axios from "axios"
 import { motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { span } from "motion/react-client"
-import { Span } from "next/dist/trace"
+// cleaned up unused/incorrect imports
 
 interface DashboardProps {
     ownerId?: string; // Made optional to prevent crashes if parent fails to pass it
@@ -93,7 +92,7 @@ function DashboardClient({ ownerId }: DashboardProps) {
                     <button 
                         type="button"
                         className="px-4 py-2 rounded-xl border border-zinc-300 text-sm font-medium hover:bg-zinc-100 transition shadow-sm bg-white"
-                        onClick={() => alert("Embed modal functionality can be added here!")}
+                        onClick={() => router.push("/embed")}
                     >
                         Embed ChatBot
                     </button>
@@ -164,12 +163,12 @@ function DashboardClient({ ownerId }: DashboardProps) {
                         >
                             {loading ? "Saving Changes..." : "Save Changes"}
                         </motion.button>
-                        {saved && <motion.span
-                        initial={{opacity:0, y:6}}
-                        animate={{opacity:1, y:0}}
-                        className="text-sm font-medium,text-emerald-600"
-                        >
-                           setting saved </motion.span>}
+                                {saved && <motion.span
+                                initial={{opacity:0, y:6}}
+                                animate={{opacity:1, y:0}}
+                                className="text-sm font-medium text-emerald-600"
+                                >
+                                    setting saved </motion.span>}
                     </div>
 
                 </div>

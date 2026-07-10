@@ -6,7 +6,10 @@ import React, { useEffect, useRef, useState } from "react";
 type Props = { email: string };
 
 function HomeClient({ email }: Props) {
+
+  const [loading,setLoading]=useState(false)
   const handleLogin = () => {
+    setLoading(true)
     window.location.href = "/api/auth/login";
   };
 
@@ -51,8 +54,8 @@ function HomeClient({ email }: Props) {
         className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-zinc-200"
       >
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="text-lg font-semibold tracking-tight">
-            support <span className="text-zinc-400">AI</span>
+            <div className="text-lg font-semibold tracking-tight">
+            InlineAgent
           </div>
 
           {email ? (
@@ -92,8 +95,9 @@ function HomeClient({ email }: Props) {
             <motion.button
               className="px-5 py-2 rounded-full bg-black text-white text-sm font-medium hover:bg-zinc-800 transition"
               onClick={handleLogin}
+              disabled={loading}
             >
-              Login
+              {loading?"Loading...":"Login"}
             </motion.button>
           )}
         </div>
@@ -107,11 +111,11 @@ function HomeClient({ email }: Props) {
             transition={{ duration: 0.7 }}
           >
             <h1 className="text-4x1 md:text-5xl font-semibold leading-tight">
-              AI Customer Support <br />
-              Build for Modern Website
+              InlineAgent — AI customer support <br />
+              Built for modern websites
             </h1>
             <p className="mt-6 text-lg text-zinc-600 max-w-xl">
-              add apowerfull AI chatbot to your website in minute. Let your customers get instant answer
+              Add a powerful AI chatbot to your website in minutes. Let your customers get instant answers
               using your own business knowledge.
             </p>
 
@@ -172,14 +176,14 @@ function HomeClient({ email }: Props) {
 
       <section id="feature" className="bf-zinc-50 py-28 px-6 border-t border-zinc-200">
         <div className="max-w-6xl mx-auto">
-          <motion.h2
+            <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
             transition={{ duration: 0.5 }}
             className="text-3xl font-semibold text-center"
           >
-            Why Business choose Support AI
+            Why businesses choose InlineAgent
           </motion.h2>
 
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -200,7 +204,7 @@ function HomeClient({ email }: Props) {
         </div>
       </section>
 
-      <footer>&copy; {new Date().getFullYear()} SupportAI. All rights reserved.</footer>
+      <footer>&copy; {new Date().getFullYear()} InlineAgent. All rights reserved.</footer>
     </div>
   );
 }

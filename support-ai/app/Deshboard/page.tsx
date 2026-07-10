@@ -6,8 +6,9 @@ export default async function DeshboardPage() {
   const session = await getSession();
 
   if (!session) {
-    redirect("/login");
+    redirect("/");
   }
+
 
   const email = (session as { user?: { email?: string } })?.user?.email ?? "";
 
