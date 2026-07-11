@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
-import DeshboardClient from "../components/DeshboardClient";
+import DashboardClient from "../components/DashboardClient";
 import { getSession } from "@/app/lib/getSession";
 
-export default async function DeshboardPage() {
+export default async function DashboardPage() {
   const session = await getSession();
 
   if (!session) {
@@ -12,7 +12,7 @@ export default async function DeshboardPage() {
 
   const email = (session as { user?: { email?: string } })?.user?.email ?? "";
 
-  return <DeshboardClient ownerId={email} />;
+  return <DashboardClient ownerId={email} />;
 }
 
 

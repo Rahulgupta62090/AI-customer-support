@@ -77,9 +77,9 @@ function HomeClient({ email }: Props) {
                   >
                     <button
                       className="w-full text-left px-4 py-3 text-sm hover:bg-zinc-100"
-                      onClick={() => window.location.assign("/Deshboard")}
+                      onClick={() => window.location.assign("/dashboard")}
                     >
-                      Deshboard
+                      Dashboard
                     </button>
                     <button
                       className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-zinc-100"
@@ -123,9 +123,9 @@ function HomeClient({ email }: Props) {
               {email ? (
                 <button
                   className="px-7 py-3 rounded-xl bg-black text-white font-medium hover:bg-zinc-800 transition disabled:opacity-60"
-                  onClick={() => window.location.assign("/Deshboard")}
+                  onClick={() => window.location.assign("/dashboard")}
                 >
-                  Go to Deshboard
+                  Go to Dashboard
                 </button>
               ) : (
                 <button

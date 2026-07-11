@@ -25,7 +25,7 @@ function EmbedClient({ ownerId }: { ownerId: string }) {
           </div>
           <button
             className="px-4 py-2 rounded-lg border border-zinc-300 text-sm hover:bg-zinc-100 transition"
-            onClick={() => router.push("/Deshboard")}
+            onClick={() => router.push("/dashboard")}
           >
             Back to Dashboard
           </button>
