@@ -47,9 +47,16 @@ function DashboardClient({ ownerId }: DashboardProps) {
 
             console.log("🚀 Settings saved successfully:", result.data)
             alert("Settings saved successfully!")
-        } catch (error: any) {
-            console.error("❌ API Response Error:", error.response?.data || error.message)
-            alert(`Failed to save: ${error.response?.data?.message || "Internal Server Error"}`)
+        } catch (error: unknown) {
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : typeof error === "object" && error !== null
+                    ? JSON.stringify(error)
+                    : String(error)
+
+            console.error("❌ API Response Error:", message)
+            alert(`Failed to save: ${message || "Internal Server Error"}`)
         } finally {
             setLoading(false)
         }

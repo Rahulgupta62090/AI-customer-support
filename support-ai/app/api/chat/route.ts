@@ -65,28 +65,37 @@ ANSWER
         const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
         const res = await ai.models.generateContent({ model: "gemini-2.5-flash", contents: prompt });
 
-        // Normalize response text from SDK variations
-        let aiText = undefined as any;
-        try {
-            aiText = (res as any).text ?? (res as any).output?.[0]?.content?.[0]?.text ?? JSON.stringify(res);
-        } catch (e) {
-            aiText = JSON.stringify(res);
-        }
+        const normalizeResult = (result: unknown) => {
+            if (typeof result === "object" && result !== null) {
+                const obj = result as Record<string, unknown>;
+                if (typeof obj.text === "string") return obj.text;
+                const output = obj.output as Array<unknown> | undefined;
+                const firstOutput = output?.[0] as Record<string, unknown> | undefined;
+                const content = firstOutput?.content as Array<unknown> | undefined;
+                const firstContent = content?.[0] as Record<string, unknown> | undefined;
+                if (typeof firstContent?.text === "string") return firstContent.text;
+            }
+            return JSON.stringify(result);
+        };
 
+        const aiText = normalizeResult(res);
         const response = NextResponse.json({ message: aiText });
         response.headers.set("Access-Control-Allow-Origin", "*");
         response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
         response.headers.set("Access-Control-Allow-Headers", "Content-Type");
         return response;
-    } catch (error) {
-        const response= NextResponse.json(
-            { message: `chat error ${error}` },
+    } catch (error: unknown) {
+        const errorMessage =
+            error instanceof Error ? error.message : typeof error === "string" ? error : "Unknown error";
+
+        const response = NextResponse.json(
+            { message: `chat error ${errorMessage}` },
             { status: 400 }
         );
-          response.headers.set("Access-Control-Allow-Origin", "*");
+        response.headers.set("Access-Control-Allow-Origin", "*");
         response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
         response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-        return response
+        return response;
     }
 }
 export const OPTIONS = async () => {

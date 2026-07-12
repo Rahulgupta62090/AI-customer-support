@@ -1,4 +1,3 @@
-import { getScaleKit  } from "@/app/lib/scalekit";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
