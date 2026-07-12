@@ -1,14 +1,11 @@
 (function(){
+    const scriptTag = document.currentScript;
+    const ownerId = scriptTag.getAttribute("data-owner-id");
+    const api_url = scriptTag.src.replace(/\/chatBot\.js$/, "/api/chat");
 
-    const api_url="https://inlineagent.vercel.app/api/chat"
-
-    const scriptTag= document.currentScript;
-    const ownerId=scriptTag.getAttribute("data-owner-id")
-
-
-    if (!ownerId){
-        console.log("ownerId is not found")
-        return
+    if (!ownerId) {
+        console.log("ownerId is not found");
+        return;
     }
 
     const button=document.createElement("div")
@@ -155,23 +152,27 @@ sendBtn.onclick=async()=>{
     messageArea.scrollTop=messageArea.scrollHeight
 
     try {
-const response=await fetch(api_url,{
+        const response = await fetch(api_url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                ownerId,
+                message: text,
+            }),
+        });
 
-        method:"POST",
-        headers:{"content-Type":"application/json"},
-        body:JSON.stringify({
-            ownerId,message:text
-        })
-    })
+        const result = await response.json();
+        const message = typeof result === "object" && result !== null && "message" in result
+            ? String(result.message)
+            : "Something went wrong.";
 
-    const data=await response.json()
-    messageArea.removeChild(typing)
-    addMessage(data|| "something went wrong","ai")
-
-} catch (error) {
-    console.log(error)
-    messageArea.removeChild(typing)
-    addMessage(data|| "something went wrong","ai")
+        messageArea.removeChild(typing);
+        addMessage(message, "ai");
+    } catch (error) {
+        console.log(error);
+        messageArea.removeChild(typing);
+        addMessage("Something went wrong.", "ai");
+    }
 }
 }
 
