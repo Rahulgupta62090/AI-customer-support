@@ -8,7 +8,6 @@ function getAppRedirectUrl(req: NextRequest) {
     try {
       return new URL(configuredUrl).origin;
     } catch {
-      // Fall back to the current request origin if the configured URL is invalid.
     }
   }
 
@@ -46,7 +45,7 @@ export async function GET(req: NextRequest) {
     response.cookies.set("access_token_expires_at", String(expiresAtSeconds), {
       httpOnly: true,
       maxAge: safeMaxAge > 0 ? safeMaxAge : 0,
-      secure: process.env.NODE_ENV === "production",
+      secure:false,
       path: "/",
       sameSite: "strict",
     });

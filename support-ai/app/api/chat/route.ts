@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
 
         const KNOWLEDGE = `
             business name - ${setting.businessName || " not provided"}
-            support email - ${setting.suportEmail || "not provided"}
-            knowledge - ${setting.KNOWLEDGE || "not provided"}
+            support email - ${setting.supportEmail || "not provided"}
+            knowledge - ${setting.knowledge || "not provided"}
             `;
 
         const prompt = `
@@ -54,17 +54,30 @@ ANSWER
 -------------------
 `;
 
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-        const res = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
-        });
+        if (!process.env.GEMINI_API_KEY) {
+            const resp = NextResponse.json({ message: "GEMINI_API_KEY is not configured on the server" }, { status: 500 });
+            resp.headers.set("Access-Control-Allow-Origin", "*");
+            resp.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+            resp.headers.set("Access-Control-Allow-Headers", "Content-Type");
+            return resp;
+        }
 
-        const response = NextResponse.json(res.text)
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const res = await ai.models.generateContent({ model: "gemini-2.5-flash", contents: prompt });
+
+        // Normalize response text from SDK variations
+        let aiText = undefined as any;
+        try {
+            aiText = (res as any).text ?? (res as any).output?.[0]?.content?.[0]?.text ?? JSON.stringify(res);
+        } catch (e) {
+            aiText = JSON.stringify(res);
+        }
+
+        const response = NextResponse.json({ message: aiText });
         response.headers.set("Access-Control-Allow-Origin", "*");
         response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
         response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-        return response
+        return response;
     } catch (error) {
         const response= NextResponse.json(
             { message: `chat error ${error}` },
