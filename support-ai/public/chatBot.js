@@ -171,12 +171,11 @@
                 })
             })
 
-            if(!response.ok){
-                throw new Error("Server responded with status "+response.status)
-            }
+          const data=await response.json()
 
-            const data=await response.json()
-
+if(!response.ok){
+    throw new Error(data?.message || ("Server responded with status "+response.status))
+}
             if(typing.parentNode){
                 messageArea.removeChild(typing)
             }
