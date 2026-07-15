@@ -3,23 +3,25 @@ import { NextRequest, NextResponse } from "next/server";
 import settings from "../../model/setting.model";
 import connectdb from "@/app/lib/db";
 
+function corsJson(body: unknown, status: number = 200) {
+    const res = NextResponse.json(body, { status });
+    res.headers.set("Access-Control-Allow-Origin", "*");
+    res.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.headers.set("Access-Control-Allow-Headers", "Content-Type");
+    return res;
+}
+
 export async function POST(req: NextRequest) {
     try {
         const { message, ownerId } = await req.json();
         if (!message || !ownerId) {
-            return NextResponse.json(
-                { message: "message and owner id is required" },
-                { status: 400 }
-            );
+            return corsJson({ message: "message and owner id is required" }, 400);
         }
         await connectdb()
 
         const setting = await settings.findOne({ ownerId });
         if (!setting) {
-            return NextResponse.json(
-                { message: "chat bot is not configured yet." },
-                { status: 400 }
-            );
+            return corsJson({ message: "chat bot is not configured yet." }, 400);
         }
 
         const KNOWLEDGE = `
@@ -55,11 +57,7 @@ ANSWER
 `;
 
         if (!process.env.GEMINI_API_KEY) {
-            const resp = NextResponse.json({ message: "GEMINI_API_KEY is not configured on the server" }, { status: 500 });
-            resp.headers.set("Access-Control-Allow-Origin", "*");
-            resp.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-            resp.headers.set("Access-Control-Allow-Headers", "Content-Type");
-            return resp;
+            return corsJson({ message: "GEMINI_API_KEY is not configured on the server" }, 500);
         }
 
         const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -79,32 +77,15 @@ ANSWER
         };
 
         const aiText = normalizeResult(res);
-        const response = NextResponse.json({ message: aiText });
-        response.headers.set("Access-Control-Allow-Origin", "*");
-        response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-        response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-        return response;
+        return corsJson({ message: aiText });
+
     } catch (error: unknown) {
         const errorMessage =
             error instanceof Error ? error.message : typeof error === "string" ? error : "Unknown error";
-
-        const response = NextResponse.json(
-            { message: `chat error ${errorMessage}` },
-            { status: 400 }
-        );
-        response.headers.set("Access-Control-Allow-Origin", "*");
-        response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-        response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-        return response;
+        return corsJson({ message: `chat error ${errorMessage}` }, 400);
     }
 }
+
 export const OPTIONS = async () => {
-    return NextResponse.json(null, {
-        status: 201,
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-        },
-    });
+    return corsJson(null, 201);
 }
