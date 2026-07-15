@@ -1,16 +1,18 @@
-(function() {
-    const scriptTag = document.currentScript;
-    const ownerId = scriptTag.getAttribute("data-owner-id");
-    const api_url = scriptTag.src.replace(/\/chatBot\.js$/, "/api/chat");
+(function(){
 
-    if (!ownerId) {
-        console.log("ownerId is not found");
-        return;
+    const api_url="https://inlineagent.vercel.app/api/chat"
+
+    const scriptTag= document.currentScript;
+    const ownerId=scriptTag.getAttribute("data-owner-id")
+
+
+    if (!ownerId){
+        console.log("ownerId is not found")
+        return
     }
 
-    // 1. Create Floating Chat Button
-    const button = document.createElement("div");
-    button.innerHTML = "💬";
+    const button=document.createElement("div")
+    button.innerHTML = "💬"
 
     Object.assign(button.style, {
         position: "fixed",
@@ -28,13 +30,12 @@
         fontSize: "22px",
         boxShadow: "0 15px 40px rgba(0,0,0,0.35)",
         zIndex: "999999",
-    });
+    })
 
-    document.body.appendChild(button);
+    document.body.appendChild(button)
 
-    // 2. Create Chat Box Container
-    const box = document.createElement("div");
-    Object.assign(box.style, {
+    const box= document.createElement("div")
+    Object.assign(box.style,{
         position: "fixed",
         bottom: "90px",
         right: "24px",
@@ -48,105 +49,156 @@
         overflow: "hidden",
         zIndex: "999999",
         fontFamily: "Inter, system-ui, sans-serif",
-    });
+    })
 
-    box.innerHTML = `
-        <div style="background:#000; color:#fff; padding:12px 14px; font-size:14px; display:flex; justify-content:space-between; align-items:center;">
-            <span>Customer Support</span>
-            <span id="chat-close" style="cursor:pointer;font-size:16px">❌</span>
-        </div>
+    box.innerHTML = `<div style="
+        background:#000;
+        color:#fff;
+        padding:12px 14px;
+        font-size:14px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+    ">
+    <span>Customer Support</span>
+    <span id="chat-close" style="cursor:pointer;font-size:16px">❌</span>
+    </div>
 
-        <div id="chat-messages" style="flex:1; padding:12px; overflow-y:auto; background:#f9fafb; display:flex; flex-direction:column;"></div>
+    <div id="chat-messages" style="
+        flex:1;
+        padding:12px;
+        overflow-y:auto;
+        background:#f9fafb;
+        display:flex;
+        flex-direction:column;
+    "></div>
 
-        <div style="display:flex; border-top:1px solid #e5e7eb; padding:8px; gap:6px;">
-            <input id="chat-input" type="text" style="flex:1; padding:8px 10px; border:1px solid #d1d5db; border-radius:8px; font-size:13px; outline:none;" placeholder="Type a message"/>
-            <button id="chat-send" style="padding:8px 12px; border:none; background:#000; color:#fff; border-radius:8px; font-size:13px; cursor:pointer;">Send</button>
-        </div>
-    `;
+    <div style="
+        display:flex;
+        border-top:1px solid #e5e7eb;
+        padding:8px;
+        gap:6px;
+    ">
+    <input id="chat-input" type="text" style="
+        flex:1;
+        padding:8px 10px;
+        border:1px solid #d1d5db;
+        border-radius:8px;
+        font-size:13px;
+        outline:none;
 
-    document.body.appendChild(box);
+    " placeholder="Type a message"/>
+    <button id="chat-send" style="padding:8px 12px;
+        border:none;
+        background:#000;
+        color:#fff;
+        border-radius:8px;
+        font-size:13px;
+        cursor:pointer;
+        ">send</button>
 
-    // 3. UI Toggle Actions
-    button.onclick = () => {
-        box.style.display = box.style.display === "none" ? "flex" : "none";
-    };
+    </div>`
 
-    document.querySelector("#chat-close").onclick = () => {
-        box.style.display = "none";
-    };
+    document.body.appendChild(box)
 
-    const input = document.querySelector("#chat-input");
-    const sendBtn = document.querySelector("#chat-send");
-    const messageArea = document.querySelector("#chat-messages");
-
-    // 4. Helper function to append message bubbles
-    function addMessage(text, from) {
-        const bubble = document.createElement("div");
-        bubble.innerHTML = text;
-        Object.assign(bubble.style, {
-            maxWidth: "78%",
-            padding: "8px 12px",
-            borderRadius: "14px",
-            fontSize: "13px",
-            lineHeight: "1.4",
-            marginBottom: "8px",
-            alignSelf: from === "user" ? "flex-end" : "flex-start",
-            background: from === "user" ? "#000" : "#e5e7eb",
-            color: from === "user" ? "#fff" : "#111",
-            borderTopRightRadius: from === "user" ? "4px" : "14px",
-            borderTopLeftRadius: from === "user" ? "14px" : "4px",
-        });
-        messageArea.appendChild(bubble);
-        messageArea.scrollTop = messageArea.scrollHeight;
+    button.onclick=()=>{
+        box.style.display=box.style.display==="none"?"flex":"none"
     }
 
-    // 5. Send Message Handler
-    sendBtn.onclick = async () => {
-        const text = input.value?.trim();
-        if (!text) {
-            return;
-        }
-        
-        addMessage(text, "user");
-        input.value = "";
+    document.querySelector("#chat-close").onclick=()=>{
+        box.style.display="none"
+    }
 
-        // Add typing indicator
-        const typing = document.createElement("div");
-        typing.innerHTML = "Typing...";
-        Object.assign(typing.style, {
+    const input=document.querySelector("#chat-input")
+    const sendBtn=document.querySelector("#chat-send")
+    const messageArea=document.querySelector("#chat-messages")
+
+
+    function addMessage(text,from){
+        const bubble=document.createElement("div")
+        bubble.innerHTML=text
+        Object.assign(bubble.style,{
+        maxWidth: "78%",
+        padding: "8px 12px",
+        borderRadius: "14px",
+        fontSize: "13px",
+        lineHeight: "1.4",
+        marginBottom: "8px",
+        alignSelf: from === "user" ? "flex-end" : "flex-start",
+        background: from === "user" ? "#000" : "#e5e7eb",
+        color: from === "user" ? "#fff" : "#111",
+
+
+        borderTopRightRadius: from === "user" ? "4px" : "14px",
+        borderTopLeftRadius: from === "user" ? "14px" : "4px",
+    })
+    messageArea.appendChild(bubble)
+    messageArea.scrollTop=messageArea.scrollHeight
+    }
+
+    // allow pressing Enter to send
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            sendBtn.click()
+        }
+    })
+
+    sendBtn.onclick=async()=>{
+        const text = input.value?.trim();
+        if(!text){
+            return
+        }
+        addMessage(text,"user")
+        input.value=""
+
+        const typing=document.createElement("div")
+        typing.innerHTML="Typing..."
+        Object.assign(typing.style,{
             fontSize: "12px",
             color: "#6b7280",
             marginBottom: "8px",
             alignSelf: "flex-start",
-        });
-        messageArea.appendChild(typing);
-        messageArea.scrollTop = messageArea.scrollHeight;
+        })
+        messageArea.appendChild(typing)
+        messageArea.scrollTop=messageArea.scrollHeight
 
         try {
-            const response = await fetch(api_url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    ownerId,
-                    message: text,
-                }),
-            });
+            const response=await fetch(api_url,{
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({
+                    ownerId,message:text
+                })
+            })
 
-            const result = await response.json();
-            
-            // Ensuring we check 'result' safely to prevent "data is not defined" errors
-            const message = typeof result === "object" && result !== null && "message" in result
-                ? String(result.message)
-                : "Something went wrong.";
-
-            messageArea.removeChild(typing);
-            addMessage(message, "ai");
-        } catch (error) {
-            console.error(error);
-            if (messageArea.contains(typing)) {
-                messageArea.removeChild(typing);
+            if(!response.ok){
+                throw new Error("Server responded with status "+response.status)
             }
-            addMessage("Something went wrong.", "ai");
+
+            const data=await response.json()
+
+            if(typing.parentNode){
+                messageArea.removeChild(typing)
+            }
+
+            // Try common shapes for the reply text.
+            // Adjust this line to match whatever key your /api/chat route actually returns.
+            let replyText
+            if (typeof data === "string") {
+                replyText = data
+            } else if (data && typeof data === "object") {
+                replyText = data.reply ?? data.message ?? data.text ?? data.output ?? data.answer
+            }
+
+            addMessage(replyText || "something went wrong","ai")
+
+        } catch (error) {
+            console.log(error)
+            if(typing.parentNode){
+                messageArea.removeChild(typing)
+            }
+            addMessage("something went wrong","ai")
         }
-    };
-})();
+    }
+
+})()
