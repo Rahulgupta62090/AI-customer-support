@@ -61,7 +61,7 @@ ANSWER
         }
 
         const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const res = await ai.models.generateContent({ model: "gemini-2.0-flash", contents: prompt });
+      const res = await ai.models.generateContent({ model: "gemini-3.1-flash-lite", contents: prompt });
         const normalizeResult = (result: unknown) => {
             if (typeof result === "object" && result !== null) {
                 const obj = result as Record<string, unknown>;
