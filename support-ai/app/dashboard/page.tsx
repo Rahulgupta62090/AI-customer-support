@@ -4,15 +4,9 @@ import { getSession } from "@/app/lib/getSession";
 
 export default async function DashboardPage() {
   const session = await getSession();
-
   if (!session) {
     redirect("/");
   }
-
-
-  const email = (session as { user?: { email?: string } })?.user?.email ?? "";
-
-  return <DashboardClient ownerId={email} />;
+  const ownerId = (session as { user?: { id?: string } })?.user?.id ?? "";
+  return <DashboardClient ownerId={ownerId} />;
 }
-
-
