@@ -29,7 +29,9 @@ export default async function LoginPage({
       }}
     >
       <h1>Login to InlineAgent</h1>
-      <p>Your session expired. Please log in again.</p>
+     {params?.reason === "expired" ? (
+  <p>Your session expired. Please log in again.</p>
+) : null}
       {errorMessage ? (
         <p style={{ color: "#b91c1c", maxWidth: "420px" }}>
           {decodeURIComponent(errorMessage)}
