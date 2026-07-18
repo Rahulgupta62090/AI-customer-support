@@ -152,7 +152,7 @@ function HomeClient({ email }: Props) {
             className="relative"
           >
             <div className="rounded-2xl bg-white shadow-2xl border border-zinc-200 p-6">
-              <div className="text-sm text-zinc-500 mb-3">LIve chat preview</div>
+              <div className="text-sm text-zinc-900 mb-3">Live chat preview</div>
               <div className="space-y-3">
                 <div className="bg-black text-white rounded-lg px-4 py-2 text-sm ml-auto w-fit">
                   Do you offer cash on delivery?

@@ -3,7 +3,6 @@ import axios from "axios"
 import { motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-// cleaned up unused/incorrect imports
 
 interface DashboardProps {
     ownerId?: string; // Made optional to prevent crashes if parent fails to pass it
@@ -17,7 +16,6 @@ function DashboardClient({ ownerId }: DashboardProps) {
     const [loading, setLoading] = useState(false)
 
     const activeOwnerId = ownerId || "mock_owner_123"
-    const [saved, setsaved]=useState(false)
 
     const handlesettings = async () => {
         // Client-side guard check
@@ -29,8 +27,6 @@ function DashboardClient({ ownerId }: DashboardProps) {
 
         try {
             setLoading(true)
-            setsaved(true)
-            setTimeout(()=> setsaved(false),3000)
             console.log("Sending payload to backend:", { 
                 ownerId: activeOwnerId, 
                 businessName, 
@@ -63,23 +59,24 @@ function DashboardClient({ ownerId }: DashboardProps) {
     }
 
     useEffect(() => {
-    if (ownerId) {
-        const handleGetDetails = async () => {
-            try {
-                const result = await axios.post("/api/settings/get", { ownerId }); 
-                
-                if (result.data) {
-                    setBusinessName(result.data.businessName || "");
-                    setsupportEmail(result.data.supportEmail || "");
-                    setknowledge(result.data.knowledge || "");
+        if (ownerId) {
+            const handleGetDetails = async () => {
+                try {
+                    const result = await axios.post("/api/settings/get", { ownerId }); 
+                    
+                    if (result.data) {
+                        setBusinessName(result.data.businessName || "");
+                        setsupportEmail(result.data.supportEmail || "");
+                        setknowledge(result.data.knowledge || "");
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch initial settings:", error);
                 }
-            } catch (error) {
-                console.error("Failed to fetch initial settings:", error);
-            }
-        };
-        handleGetDetails();
-    }
-}, [ownerId]);
+            };
+            handleGetDetails();
+        }
+    }, [ownerId]);
+
     return (
         <div className='min-h-screen bg-zinc-50 text-zinc-900'>
             <motion.div
@@ -93,7 +90,7 @@ function DashboardClient({ ownerId }: DashboardProps) {
                         className='text-lg font-semibold tracking-tight cursor-pointer select-none'
                         onClick={() => router.push("/")}
                     >
-                        Support <span className='text-zinc-400'>AI</span>
+                    InlineAgent
                     </div>
                     
                     <button 
@@ -166,16 +163,20 @@ function DashboardClient({ ownerId }: DashboardProps) {
                             whileTap={!loading ? { scale: 0.98 } : {}}
                             disabled={loading}
                             onClick={handlesettings}
-                            className="px-8 py-3 rounded-xl bg-black text-white text-sm font-medium hover:bg-zinc-800 transition disabled:opacity-60 shadow-sm"
+                            className="px-8 py-3 rounded-xl bg-black text-white text-sm font-medium hover:bg-zinc-800 transition disabled:opacity-70 disabled:cursor-not-allowed shadow-sm min-w-[160px] flex items-center justify-center gap-2"
                         >
-                            {loading ? "Saving Changes..." : "Save Changes"}
+                            {loading ? (
+                                <>
+                                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Saving...
+                                </>
+                            ) : (
+                                "Save Changes"
+                            )}
                         </motion.button>
-                                {saved && <motion.span
-                                initial={{opacity:0, y:6}}
-                                animate={{opacity:1, y:0}}
-                                className="text-sm font-medium text-emerald-600"
-                                >
-                                    setting saved </motion.span>}
                     </div>
 
                 </div>
