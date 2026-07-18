@@ -8,6 +8,7 @@ function getAppRedirectUrl(req: NextRequest) {
     try {
       return new URL(configuredUrl).origin;
     } catch {
+      // Fallback below
     }
   }
 
@@ -30,24 +31,29 @@ export async function GET(req: NextRequest) {
     const session = await scalekit.authenticateWithCode(code, redirectUri);
 
     const response = NextResponse.redirect(getAppRedirectUrl(req));
-    const tokenExpiryInSeconds = session.expiresIn || 3600;
-    const safeMaxAge = tokenExpiryInSeconds - 60;
-    const expiresAtSeconds = Math.floor(Date.now() / 1000) + (safeMaxAge > 0 ? safeMaxAge : 0);
+    
+    // Ensure expiresIn is treated as a valid number, default to 1 hour (3600s)
+    const tokenExpiryInSeconds = Number(session.expiresIn) || 3600;
+    
+    // Subtract 60 seconds for a safe buffer, ensuring it never drops below a 5-minute minimum session
+    const safeMaxAge = Math.max(tokenExpiryInSeconds - 60, 300); 
+    const expiresAtSeconds = Math.floor(Date.now() / 1000) + safeMaxAge;
 
+    // Use lax for OAuth callbacks to prevent browser dropping the cookie on cross-site redirects
     response.cookies.set("access_token", session.accessToken, {
       httpOnly: true,
-      maxAge: safeMaxAge > 0 ? safeMaxAge : 0,
+      maxAge: safeMaxAge,
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      sameSite: "strict",
+      sameSite: "lax", 
     });
 
     response.cookies.set("access_token_expires_at", String(expiresAtSeconds), {
-      httpOnly: true,
-      maxAge: safeMaxAge > 0 ? safeMaxAge : 0,
-      secure:false,
+      httpOnly: true, // Consider setting this to false ONLY if your client-side JS needs to read it
+      maxAge: safeMaxAge,
+      secure: process.env.NODE_ENV === "production",
       path: "/",
-      sameSite: "strict",
+      sameSite: "lax", 
     });
 
     return response;
